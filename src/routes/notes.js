@@ -15,51 +15,20 @@ router.get('/', (req, res) => {
         [{ id, text, dateCreated, lastModified }]
   */
 
-  /*
-
-    // Your code here...
-
-    const notes = [] // this is the response object, make sure to replace with actual value
-
-
-
-    // Upon succ, run the following lines to validate the response object and respond to client
-
-    // --- begin of succ flow ---
-    if (!validateNoteArray(notes)) {
-      res.status(500).send('Invalid data type')
-    }
-    res.send({ notes })
-    // --- end of succ flow ---
-
-
-
-    // Upon fail, run the following line to respond with an error
-
-    // --- begin of fail flow ---
-    res.status(500).send('Fail to query')
-    // --- end of fail flow ---
-    
-  */
-
-
-
-  // TODO-3.1: Remove this section once you start working on TODO-3
-  // --- Remove section begins ---
-  const notes = [ 
-    { id: 11, text: 'This is dummy note from fetch all!', dateCreated: '2021-04-15', lastModified: '2021-04-17' },
-    { id: 12, text: 'This is another dummy note from fetch all!', dateCreated: '2021-09-15', lastModified: '2021-10-17' }
-  ]
-  if (!validateNoteArray(notes)) {
-    res.status(500).send('Invalid data type')
-  }
-  res.send({ notes })
-  // --- Remove section ends ---
+    var notes = [] // this is the response object, make sure to replace with actual value
+    let response = "SELECT * FROM note_details2 ORDER BY id DESC"; // query database to get all the players
+    db.query(response, function (err, result) {
+      if (err) throw err; 
+      notes = result;  
+      if (!validateNoteArray(notes)) {
+       return res.status(500).send('Invalid data type')
+      }
+      return res.send({ notes })   
+    });
 })
-/* -------------------------------------------------------------------------- */
 
 /* ------------------------- TODO-7 - Search Notes -------------------------- */
-router.get('/search/:searchKey', (req, res) => {
+router.get('/search/:searchKey', async (req, res) => {
   console.log(`[GET] http://localhost:${global.port}/notes/search - Searching notes`)
 
   /*
@@ -75,45 +44,21 @@ router.get('/search/:searchKey', (req, res) => {
   */
   const searchKey = req.params.searchKey
   console.log(searchKey)
- 
-  /*
 
-    // Your code here...
+    var notes = [] // this is the response object, make sure to replace with actual value
 
-    const notes = [] // this is the response object, make sure to replace with actual value
+    const searchNotes = `SELECT * from note_details2 WHERE text like '%${searchKey}%'`;
+    db.query(searchNotes, function (err, result) {
+      if (err) throw err; 
+      notes = result;  
+      if (!validateNoteArray(notes)) {
+       return res.status(500).send('Invalid data type')
+      }
+      return res.send({ notes })   
+    });
 
-
-    // Upon succ, run the following lines to validate the response object and respond to client
-
-    // --- begin of succ flow ---
-    if (!validateNoteArray(notes)) {
-      res.status(500).send('Invalid data type')
-    }
-    res.send({ notes })
-    // --- end of succ flow ---
-
-
-
-    // Upon fail, run the following line to response with error
-
-    // --- begin of fail flow ---
-    res.status(500).send('Fail to query')
-    // --- end of fail flow ---
-    
-  */
-
-
-
-  // TODO-7.1: Remove this line once you start working on TODO-7
-  // --- Remove section begins ---
-  const notes = [ { id: 5, text: `This is a dummy note from search contains search key ${searchKey}!`, dateCreated: '2021-04-15', lastModified: '2021-04-17' } ]
-  if (!validateNoteArray(notes)) {
-    res.status(500).send('Invalid data type')
-  }
-  res.send({ notes })
-  // --- Remove section ends ---
 })
-/* -------------------------------------------------------------------------- */
+
 
 /* ----------------------- TODO-8 - Delete All Notes ------------------------ */
 router.delete('/', (req, res) => {
@@ -123,36 +68,12 @@ router.delete('/', (req, res) => {
     TODO-8:
       Delete all notes from the database
   */
+    let responseDeleteAllNotes = "DELETE FROM note_details2;"
+    db.query(responseDeleteAllNotes, function (err, result) {
+      if (err) throw err; 
+     
+      return res.send()   
+    });
 
-  /*
-
-    // Your code here...
-
-
-
-    // Upon succ, run the following lines to validate the response object and reponse to client
-
-    // --- begin of succ flow ---
-    res.send()
-    // --- end of succ flow ---
-
-
-
-    // Upon fail, run the following line to respond with an error
-
-    // --- begin of fail flow ---
-    res.status(500).send('Fail to delete')
-    // --- end of fail flow ---
-
-  */
-
-
-
-  // TODO-8.1: Remove this section once you start working on TODO-8
-  // --- Remove section begins ---
-  res.send()
-  // --- Remove section ends ---
 })
-/* -------------------------------------------------------------------------- */
-
 module.exports = router
